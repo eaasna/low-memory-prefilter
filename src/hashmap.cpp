@@ -1,4 +1,4 @@
-#include "fastq_conversion.hpp"
+#include "hashmap.hpp"
 
 void convert_fastq(std::filesystem::path fastq_file, std::filesystem::path out)
 {
