@@ -2,6 +2,8 @@
 
 #include <shared.hpp>
 
+#include <seqan3/argument_parser/all.hpp>
+
 // =================================
 // Shared.
 // =================================

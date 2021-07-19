@@ -1,6 +1,7 @@
 #include <argument_parsing.hpp>
 #include <search.hpp>
 #include <build.hpp>
+#include <shared.hpp>
 
 #include <seqan3/argument_parser/all.hpp> // includes all necessary headers
 #include <seqan3/core/debug_stream.hpp>   // our custom output stream
@@ -11,7 +12,7 @@
 
 void init_shared_meta(seqan3::argument_parser & parser)
 {
-    parser.info.app_name = "Low-memory-prefilter";
+    parser.info.app_name = "Hashmap";
     parser.info.author = "Evelin Aasna";
     parser.info.short_description = "A low memory alternative to an IBF based pre-filter.";
     parser.info.version = "1.0.0";
@@ -41,10 +42,6 @@ void init_top_level_parser(seqan3::argument_parser & parser)
 
 void init_build_parser(seqan3::argument_parser & parser, cmd_arguments & args)
 {
-    parser.info.author = "Evelin Aasna";
-    parser.info.short_description = "Low memory alternative to an IBF based pre-filter.";
-    parser.info.version = "1.0.0";
- 
     parser.add_positional_option(arguments.bin_file, 
 		    "File containing one file per line per bin.",
                     seqan3::input_file_validator{});
@@ -75,10 +72,6 @@ void run_build(seqan3::argument_parser & parser)
 
 void init_search_parser(seqan3::argument_parser & parser, cmd_arguments & args)
 {
-    parser.info.author = "Evelin Aasna";
-    parser.info.short_description = "Low memory alternative to an IBF based pre-filter.";
-    parser.info.version = "1.0.0";
- 
     parser.add_positional_option(arguments.bin_file, 
 		    "File containing one file per line per bin.",
                     seqan3::input_file_validator{});
