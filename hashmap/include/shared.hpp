@@ -27,6 +27,7 @@ struct search_arguments
 {
     uint8_t kmer_size{10u};
     uint8_t threads{1u};
+    uint8_t errors{0};
 
     std::filesystem::path query_file{};
     std::filesystem::path hashmap_file{};

@@ -81,20 +81,18 @@ void init_search_parser(seqan3::argument_parser & parser, search_arguments & arg
 		    "File containing query reads.",
                     seqan3::input_file_validator{});
  
-    parser.add_option(arguments.kmer_size,
-		    '\0',
-                    "kmer",
-                    "Choose the kmer size.",
-                    seqan3::option_spec::standard,
-                    seqan3::arithmetic_range_validator{4, 13});
     parser.add_option(arguments.hashmap_file,
 		    '\0',
                     "hashmap",
                     "The hash table input file.",
 		    seqan3::option_spec::standard,
                     seqan3::input_file_validator{});
-
-    //output path as option, otherwise output is printed
+    parser.add_option(arguments.errors,
+		    '\0',
+		    "error",
+		    "Choose the number of errors.",
+		    seqan3::option_spec::standard,
+		    positive_integer_validator{true});
     parser.add_option(arguments.out_path, 
 		    '\0', 
 		    "output", 
