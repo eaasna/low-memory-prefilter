@@ -2,7 +2,8 @@
 
 #include <shared.hpp>
 
-void hashmap_build(build_arguments const & arguments);
+namespace hashmap
+{
 
 void run_program(build_arguments const & arguments)
 {
@@ -11,3 +12,5 @@ void run_program(build_arguments const & arguments)
     // store it
 
 };
+
+} // namespace hashmap

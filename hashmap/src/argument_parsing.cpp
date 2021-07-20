@@ -1,10 +1,13 @@
 #include <argument_parsing.hpp>
-#include <search.hpp>
-#include <build.hpp>
+#include <search/search.hpp>
+#include <build/build.hpp>
 #include <shared.hpp>
 
 #include <seqan3/argument_parser/all.hpp> // includes all necessary headers
 #include <seqan3/core/debug_stream.hpp>   // our custom output stream
+
+namespace hashmap
+{
 
 // ==========================================
 // Shared arguments.
@@ -40,7 +43,7 @@ void init_top_level_parser(seqan3::argument_parser & parser)
 // Build.
 // ==========================================
 
-void init_build_parser(seqan3::argument_parser & parser, cmd_arguments & args)
+void init_build_parser(seqan3::argument_parser & parser, build_arguments & arguments)
 {
     parser.add_positional_option(arguments.bin_file, 
 		    "File containing one file per line per bin.",
@@ -53,8 +56,10 @@ void init_build_parser(seqan3::argument_parser & parser, cmd_arguments & args)
                     seqan3::option_spec::standard,
                     seqan3::arithmetic_range_validator{1, 13});
     //output path as option, otherwise output is printed
-    parser.add_option(output_file, 'o', "output", "The file for fasta output. Default: stdout");
-    parser.add_flag(verbose, 'v', "verbose", "Give more detailed information here."); // example for a flag
+    parser.add_option(arguments.out_path, 
+		    '\0', 
+		    "output", 
+		    "The hash table output file.");
 }
 
 void run_build(seqan3::argument_parser & parser)
@@ -70,10 +75,10 @@ void run_build(seqan3::argument_parser & parser)
 // Search.
 // ==========================================
 
-void init_search_parser(seqan3::argument_parser & parser, cmd_arguments & args)
+void init_search_parser(seqan3::argument_parser & parser, search_arguments & arguments)
 {
-    parser.add_positional_option(arguments.bin_file, 
-		    "File containing one file per line per bin.",
+    parser.add_positional_option(arguments.query_file, 
+		    "File containing query reads.",
                     seqan3::input_file_validator{});
  
     parser.add_option(arguments.kmer_size,
@@ -81,10 +86,19 @@ void init_search_parser(seqan3::argument_parser & parser, cmd_arguments & args)
                     "kmer",
                     "Choose the kmer size.",
                     seqan3::option_spec::standard,
-                    seqan3::arithmetic_range_validator{1, 13});
+                    seqan3::arithmetic_range_validator{4, 13});
+    parser.add_option(arguments.hashmap_file,
+		    '\0',
+                    "hashmap",
+                    "The hash table input file.",
+		    seqan3::option_spec::standard,
+                    seqan3::input_file_validator{});
+
     //output path as option, otherwise output is printed
-    parser.add_option(output_file, 'o', "output", "The file for fasta output. Default: stdout");
-    parser.add_flag(verbose, 'v', "verbose", "Give more detailed information here."); // example for a flag
+    parser.add_option(arguments.out_path, 
+		    '\0', 
+		    "output", 
+		    "The directory to create output files.");
 }
 
 void run_search(seqan3::argument_parser & parser)
@@ -95,4 +109,6 @@ void run_search(seqan3::argument_parser & parser)
 
     hashmap_search(arguments);
 };
+
+} // namespace hashmap
 

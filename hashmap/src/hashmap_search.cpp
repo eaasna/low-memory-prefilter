@@ -1,9 +1,14 @@
-#include <search.hpp>
+#include <search/run_program.hpp>
 
-void raptor_search(search_arguments const & arguments)
+namespace hashmap
+{
+
+void hashmap_search(search_arguments const & arguments)
 {
     run_program(arguments);
 
     return;
-}
+};
+
+} // namespace hashmap
 

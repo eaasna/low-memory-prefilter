@@ -3,8 +3,6 @@
 #include <seqan3/argument_parser/all.hpp>
 #include <seqan3/core/debug_stream.hpp>
 
-#include "argument_parser.hpp"
-
 int main(int argc, char ** argv)
 {
    try
@@ -16,9 +14,9 @@ int main(int argc, char ** argv)
 
         seqan3::argument_parser & sub_parser = top_level_parser.get_sub_parser();
         if (sub_parser.info.app_name == std::string_view{"hashmap-build"})
-            hashmap::run_build(sub_parser, false);
+            hashmap::run_build(sub_parser);
         if (sub_parser.info.app_name == std::string_view{"hashmap-search"})
-            hashmap::run_search(sub_parser, false);
+            hashmap::run_search(sub_parser);
     }
     catch (seqan3::argument_parser_error const & ext)
     {

@@ -4,6 +4,45 @@
 
 #include <seqan3/argument_parser/all.hpp>
 
+namespace hashmap
+{
+
+// =================================
+// Validators.
+// =================================
+
+class positive_integer_validator
+{
+public:
+    using option_value_type = size_t;
+
+    positive_integer_validator() = default;
+    positive_integer_validator(positive_integer_validator const &) = default;
+    positive_integer_validator & operator=(positive_integer_validator const &) = default;
+    positive_integer_validator(positive_integer_validator &&) = default;
+    positive_integer_validator & operator=(positive_integer_validator &&) = default;
+    ~positive_integer_validator() = default;
+
+    explicit positive_integer_validator(bool const is_zero_positive_) : is_zero_positive{is_zero_positive_} {}
+
+    void operator()(option_value_type const & val) const
+    {
+        if (!is_zero_positive && !val)
+            throw seqan3::validation_error{"The value must be a positive integer."};
+    }
+
+    std::string get_help_page_message () const
+    {
+        if (is_zero_positive)
+            return "Value must be a positive integer or 0.";
+        else
+            return "Value must be a positive integer.";
+    }
+
+private:
+    bool is_zero_positive{false};
+};
+
 // =================================
 // Shared.
 // =================================
@@ -22,12 +61,6 @@ void init_shared_options(seqan3::argument_parser & parser, arguments_t & argumen
                       "Choose the number of threads.",
                       seqan3::option_spec::standard,
                       positive_integer_validator{});
-    parser.add_option(arguments.parts,
-                      '\0',
-                      "parts",
-                      "Splits the index in this many parts.",
-                      arguments.is_socks ? seqan3::option_spec::hidden : seqan3::option_spec::standard,
-                      power_of_two_validator{});
 }
 
 // =================================
@@ -50,4 +83,4 @@ void run_search(seqan3::argument_parser & parser);
 
 void init_top_level_parser(seqan3::argument_parser & parser);
 
-// TODO: do you need validators? declare them here
+} // namespace hashmap
