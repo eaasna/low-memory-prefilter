@@ -48,7 +48,6 @@ void init_build_parser(seqan3::argument_parser & parser, build_arguments & argum
     parser.add_positional_option(arguments.bin_file, 
 		    "File containing one file per line per bin.",
                     seqan3::input_file_validator{});
- 
     parser.add_option(arguments.kmer_size,
 		    '\0',
                     "kmer",
@@ -67,6 +66,21 @@ void run_build(seqan3::argument_parser & parser)
     build_arguments arguments{};
     init_build_parser(parser, arguments);
     try_parsing(parser);
+
+    std::ifstream istrm{arguments.bin_file};
+    std::string line;
+    auto sequence_file_validator{bin_validator{}.sequence_file_validator};
+
+    while (std::getline(istrm, line))
+    {
+        if (!line.empty())
+        {
+            sequence_file_validator(line);
+            arguments.bin_path.emplace_back(std::vector<std::filesystem::path>{line});
+        }
+    }
+
+    arguments.bins = arguments.bin_path.size();
 
     hashmap_build(arguments);
 }
