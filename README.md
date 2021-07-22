@@ -14,3 +14,5 @@ Instructions:
 6. optional: build and run the tests: `make test`
 7. optional: build the api documentation: `make doc`
 8. execute the app which is located at build/bin/: `./hashmap`
+
+Building the hash table is done single threaded. Searching the reads in the table can be done multi threaded. 
