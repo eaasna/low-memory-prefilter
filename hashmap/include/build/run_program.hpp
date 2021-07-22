@@ -21,7 +21,7 @@ void run_program(build_arguments const & arguments)
     hashmap_factory generator{arguments};
     auto hashmap = generator();
 
-    //store_index(arguments.out_path, hm, arguments);
+    store_index(arguments.out_path, hashmap, arguments);
 };
 
 } // namespace hashmap

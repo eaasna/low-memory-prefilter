@@ -11,6 +11,7 @@ namespace hashmap
 template <typename algorithm_t>
 void call_parallel_on_bins(algorithm_t && worker, build_arguments const & arguments)
 {
+    // TODO: what is chunk size? 
     size_t const chunk_size = std::clamp<size_t>(std::bit_ceil(arguments.bins / arguments.threads),
                                                  8u,
                                                  64u);

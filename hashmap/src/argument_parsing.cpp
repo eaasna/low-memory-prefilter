@@ -45,8 +45,11 @@ void init_top_level_parser(seqan3::argument_parser & parser)
 
 void init_build_parser(seqan3::argument_parser & parser, build_arguments & arguments)
 {
+    init_shared_meta(parser);
+    init_shared_options(parser, arguments);
+    
     parser.add_positional_option(arguments.bin_file, 
-		    "File containing one file per line per bin.",
+		    "File containing one file per line per bin. Must be ordered by bin number.",
                     seqan3::input_file_validator{});
     parser.add_option(arguments.kmer_size,
 		    '\0',
@@ -91,6 +94,9 @@ void run_build(seqan3::argument_parser & parser)
 
 void init_search_parser(seqan3::argument_parser & parser, search_arguments & arguments)
 {
+    init_shared_meta(parser);
+    init_shared_options(parser, arguments);
+
     parser.add_positional_option(arguments.query_file, 
 		    "File containing query reads.",
                     seqan3::input_file_validator{});

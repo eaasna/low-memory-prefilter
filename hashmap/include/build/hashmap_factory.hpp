@@ -64,17 +64,23 @@ private:
 	{
 	    // [bin_01.fasta, 1]
 	    for (auto && [file_names, bin_number] : zipped_view)
+	    {
 		// bin_01.fasta
+		seqan3::debug_stream << std::to_string(bin_number) << '\n';
                 for (auto && file_name : file_names)
 		    // ACCGTCGTC
                     for (auto && [seq] : sequence_file_t{file_name})
 			// 3, 17, 9
 			// for each k-mer in the bin
                         for (auto && value : seq | hash_view())
+			{
+			    // seqan3::debug_stream << std::to_string(value) << '\t';
 			    // add the bin number to the list that corresponds to the k-mer hash key
 			    hm[value].push_back(bin_number);
 	    		    // TODO: this only works if you give the paths in order of bin number
-        };
+			}
+	    }
+	};
 
 	call_parallel_on_bins(worker, *arguments);
 

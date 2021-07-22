@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cereal/types/unordered_map.hpp>
+#include <cereal/types/deque.hpp>
+
 #include <unordered_map>
 #include <deque>
 #include <fstream>
@@ -19,8 +22,7 @@ static inline void store_index(std::filesystem::path const & path,
     std::ofstream os{path, std::ios::binary};
     cereal::BinaryOutputArchive oarchive{os};
     oarchive(arguments.kmer_size);
-    // TODO: how to ceralise an unordered_map
-    // oarchive(hashmap);
+    oarchive(hashmap);
 }
 
 } //namespace hashmap
