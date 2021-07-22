@@ -113,6 +113,12 @@ void init_search_parser(seqan3::argument_parser & parser, search_arguments & arg
 		    "Choose the number of errors.",
 		    seqan3::option_spec::standard,
 		    positive_integer_validator{true});
+    parser.add_option(arguments.threads,
+		    '\0',
+		    "threads",
+		    "Choose the number of errors.",
+		    seqan3::option_spec::standard,
+		    positive_integer_validator{true});
     parser.add_option(arguments.out_path, 
 		    '\0', 
 		    "output", 

@@ -42,6 +42,10 @@ struct search_arguments
     std::filesystem::path query_file{};
     std::filesystem::path hashmap_file{};
     std::filesystem::path out_path{"./"};
+   
+    bool write_time{false};
+
+    uint64_t bins{64};
 };
 
 } // namespace hashmap
