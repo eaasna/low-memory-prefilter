@@ -1,6 +1,7 @@
 #pragma once
 
 #include <seqan3/search/views/kmer_hash.hpp>
+#include <seqan3/core/debug_stream.hpp>
 
 #include <deque>
 #include <iomanip> // std::set_precision
@@ -43,9 +44,6 @@ void run_program(search_arguments const & arguments)
         std::string result_string{};
         std::vector<uint32_t> read_hashes;
 
-	// TODO: read in the number of bins from serealised object
-	std::vector<uint16_t> result(64, 0);
-
         auto hash_view = seqan3::views::kmer_hash(seqan3::shape{seqan3::ungapped{arguments.kmer_size}});
 
         for (auto && [id, seq] : records | seqan3::views::slice(start, end))
@@ -58,6 +56,9 @@ void run_program(search_arguments const & arguments)
 
             read_hashes = seq | hash_view | seqan3::views::to<std::vector<uint32_t>>;
 
+	    // TODO: read in the number of bins from serealised object
+            std::vector<uint16_t> result(64, 0);
+	   
 	    for (auto hash : read_hashes)
 	    {
 		auto itr = hashmap.find(hash);
@@ -73,6 +74,17 @@ void run_program(search_arguments const & arguments)
 		}
 	    }
 
+	    /* TODO: remove debugging
+	    auto hash = read_hashes[0];
+	    auto itr = hashmap.find(hash);
+	    seqan3::debug_stream << "Nr of bins that contain AAAAA" << '\n';
+	    if (itr != hashmap.end())
+	    {
+	        for (uint16_t bin : itr->second)
+			seqan3::debug_stream << std::to_string(bin) << '\t';
+	    }
+	    */
+
 	    size_t current_bin{0};
 	    size_t const threshold = kmer_lemma;
 
@@ -80,6 +92,10 @@ void run_program(search_arguments const & arguments)
             {
                 if (count >= threshold)
                 {
+		    //TODO: remove debugging
+		    // seqan3::debug_stream << "Count: " << std::to_string(count) << '\n';
+		    // seqan3::debug_stream << "Threshold: " << std::to_string(threshold) << '\n';
+
                     result_string += std::to_string(current_bin);
                     result_string += ',';
                 }

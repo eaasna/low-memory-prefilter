@@ -56,7 +56,7 @@ private:
 		seqan3::debug_stream << std::to_string(bin_number) << '\n';
                 for (auto && file_name : file_names)
                     for (auto && [seq] : sequence_file_t{file_name})
-			// for each k-mer in the bin
+			// for each k-mer in a sequence
                         for (auto && value : seq | hash_view())
 			{
 			    // add the bin number to the list that corresponds to the k-mer hash key
