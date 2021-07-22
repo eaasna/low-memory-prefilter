@@ -1,7 +1,7 @@
 #pragma once
 
 #include <unordered_map>
-#include <deque>
+#include <set>
 
 #include <seqan3/core/debug_stream.hpp>
 #include <seqan3/search/views/kmer_hash.hpp>
@@ -41,7 +41,7 @@ private:
 	
 	assert(arguments != nullptr);
 	
-	std::unordered_map<uint32_t, std::deque<uint16_t>> hm;
+	std::unordered_map<uint32_t, std::set<uint16_t>> hm;
 
 	auto hash_view = [&] ()
 	{
@@ -60,7 +60,7 @@ private:
                         for (auto && value : seq | hash_view())
 			{
 			    // add the bin number to the list that corresponds to the k-mer hash key
-			    hm[value].push_back(bin_number);
+			    hm[value].insert(bin_number);
 	    		    // TODO: this only works if you give the paths in order of bin number
 			}
 	    }
