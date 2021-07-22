@@ -3,8 +3,8 @@
 #include <seqan3/search/views/kmer_hash.hpp>
 #include <seqan3/core/debug_stream.hpp>
 
-#include <deque>
 #include <iomanip> // std::set_precision
+#include <set>
 #include <unordered_map>
 
 #include <search/do_parallel.hpp>
@@ -16,8 +16,7 @@ namespace hashmap
 
 void run_program(search_arguments const & arguments)
 {
-    //TODO: is it necessary to initialise the hashmap here?
-    auto hashmap = std::unordered_map<uint32_t, std::deque<uint16_t>>{};
+    auto hashmap = std::unordered_map<uint32_t, std::set<uint16_t>>{};
 
     double ibf_io_time{0.0};
     double reads_io_time{0.0};
@@ -27,6 +26,7 @@ void run_program(search_arguments const & arguments)
     {
         load_hashmap(hashmap, arguments, ibf_io_time);
     };
+
     auto cereal_handle = std::async(std::launch::async, cereal_worker);
 
     seqan3::sequence_file_input<dna4_traits, seqan3::fields<seqan3::field::id, seqan3::field::seq>> fin{arguments.query_file};
@@ -90,11 +90,11 @@ void run_program(search_arguments const & arguments)
 
             for (auto && count : result)
             {
+		    //TODO: remove debugging
+		seqan3::debug_stream << "Count: " << std::to_string(count) << '\n';
+		// seqan3::debug_stream << "Threshold: " << std::to_string(threshold) << '\n';
                 if (count >= threshold)
                 {
-		    //TODO: remove debugging
-		    // seqan3::debug_stream << "Count: " << std::to_string(count) << '\n';
-		    // seqan3::debug_stream << "Threshold: " << std::to_string(threshold) << '\n';
 
                     result_string += std::to_string(current_bin);
                     result_string += ',';

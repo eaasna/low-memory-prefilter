@@ -1,7 +1,7 @@
 #pragma once
   
+#include <cereal/types/set.hpp>
 #include <cereal/types/unordered_map.hpp>
-#include <cereal/types/deque.hpp>
 #include <chrono>
 
 #include <seqan3/std/filesystem>
