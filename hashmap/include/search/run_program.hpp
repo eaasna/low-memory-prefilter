@@ -1,7 +1,6 @@
 #pragma once
 
 #include <seqan3/search/views/kmer_hash.hpp>
-#include <seqan3/core/debug_stream.hpp>
 
 #include <iomanip> // std::set_precision
 #include <set>
@@ -18,13 +17,13 @@ void run_program(search_arguments const & arguments)
 {
     auto hashmap = std::unordered_map<uint32_t, std::set<uint16_t>>{};
 
-    double ibf_io_time{0.0};
+    double hashmap_io_time{0.0};
     double reads_io_time{0.0};
     double compute_time{0.0};
 
     auto cereal_worker = [&] ()
     {
-        load_hashmap(hashmap, arguments, ibf_io_time);
+        load_hashmap(hashmap, arguments, hashmap_io_time);
     };
 
     auto cereal_handle = std::async(std::launch::async, cereal_worker);
@@ -35,9 +34,8 @@ void run_program(search_arguments const & arguments)
 
     sync_out synced_out{arguments.out_path};
 
-    // TODO: assign pattern size based on read lenght
-    size_t const kmer_lemma = 150 + 1u > (arguments.errors + 1u) * arguments.kmer_size ?
-	150 + 1u - (arguments.errors + 1u) * arguments.kmer_size : 0;
+    size_t const kmer_lemma = arguments.pattern_size + 1u > (arguments.errors + 1u) * arguments.kmer_size ?
+	arguments.pattern_size + 1u - (arguments.errors + 1u) * arguments.kmer_size : 0;
 
     auto worker = [&] (size_t const start, size_t const end)
     {
@@ -55,12 +53,12 @@ void run_program(search_arguments const & arguments)
 
 
             read_hashes = seq | hash_view | seqan3::views::to<std::vector<uint32_t>>;
-
-	    // TODO: read in the number of bins from serealised object
-            std::vector<uint16_t> result(64, 0);
-	   
+            std::vector<uint16_t> result(arguments.bins, 0);
+	  
 	    for (auto hash : read_hashes)
 	    {
+
+
 		auto itr = hashmap.find(hash);
                 if (itr != hashmap.end())
 		{
@@ -74,28 +72,13 @@ void run_program(search_arguments const & arguments)
 		}
 	    }
 
-	    /* TODO: remove debugging
-	    auto hash = read_hashes[0];
-	    auto itr = hashmap.find(hash);
-	    seqan3::debug_stream << "Nr of bins that contain AAAAA" << '\n';
-	    if (itr != hashmap.end())
-	    {
-	        for (uint16_t bin : itr->second)
-			seqan3::debug_stream << std::to_string(bin) << '\t';
-	    }
-	    */
-
 	    size_t current_bin{0};
 	    size_t const threshold = kmer_lemma;
 
             for (auto && count : result)
             {
-		    //TODO: remove debugging
-		seqan3::debug_stream << "Count: " << std::to_string(count) << '\n';
-		// seqan3::debug_stream << "Threshold: " << std::to_string(threshold) << '\n';
                 if (count >= threshold)
                 {
-
                     result_string += std::to_string(current_bin);
                     result_string += ',';
                 }
@@ -128,7 +111,7 @@ void run_program(search_arguments const & arguments)
         file_handle << "IBF I/O\tReads I/O\tCompute\n";
         file_handle << std::fixed
                     << std::setprecision(2)
-                    << ibf_io_time << '\t'
+                    << hashmap_io_time << '\t'
                     << reads_io_time << '\t'
                     << compute_time;
     }

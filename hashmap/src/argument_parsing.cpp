@@ -5,6 +5,7 @@
 
 #include <seqan3/argument_parser/all.hpp> // includes all necessary headers
 #include <seqan3/core/debug_stream.hpp>   // our custom output stream
+#include <seqan3/io/views/async_input_buffer.hpp>
 
 namespace hashmap
 {
@@ -49,8 +50,7 @@ void init_build_parser(seqan3::argument_parser & parser, build_arguments & argum
     init_shared_options(parser, arguments);
     
     parser.add_positional_option(arguments.bin_file, 
-		    "File containing one file per line per bin. Must be ordered by bin number.",
-                    seqan3::input_file_validator{});
+		    "File containing one file per line per bin. Must be ordered by bin number.");
     parser.add_option(arguments.kmer_size,
 		    '\0',
                     "kmer",
@@ -105,7 +105,7 @@ void init_search_parser(seqan3::argument_parser & parser, search_arguments & arg
 		    '\0',
                     "hashmap",
                     "The hash table input file.",
-		    seqan3::option_spec::standard,
+		    seqan3::option_spec::required,
                     seqan3::input_file_validator{});
     parser.add_option(arguments.errors,
 		    '\0',
@@ -113,6 +113,11 @@ void init_search_parser(seqan3::argument_parser & parser, search_arguments & arg
 		    "Choose the number of errors.",
 		    seqan3::option_spec::standard,
 		    positive_integer_validator{true});
+    parser.add_option(arguments.pattern_size,
+                      '\0',
+                      "pattern",
+                      "Choose the pattern size. Default: Use median of sequence lengths in query file.",
+                      seqan3::option_spec::standard);
     parser.add_option(arguments.threads,
 		    '\0',
 		    "threads",
@@ -122,7 +127,8 @@ void init_search_parser(seqan3::argument_parser & parser, search_arguments & arg
     parser.add_option(arguments.out_path, 
 		    '\0', 
 		    "output", 
-		    "The directory to create output files.");
+		    "The directory to create output files.",
+		    seqan3::option_spec::required);
 }
 
 void run_search(seqan3::argument_parser & parser)
@@ -130,6 +136,21 @@ void run_search(seqan3::argument_parser & parser)
     search_arguments arguments{};
     init_search_parser(parser, arguments);
     try_parsing(parser);
+
+    // ==========================================
+    // Process --pattern.
+    // ==========================================
+    if (!arguments.pattern_size)
+    {
+        std::vector<uint64_t> sequence_lengths{};
+        seqan3::sequence_file_input<dna4_traits, seqan3::fields<seqan3::field::seq>> query_in{arguments.query_file};
+        for (auto & [seq] : query_in | seqan3::views::async_input_buffer(16))
+        {
+            sequence_lengths.push_back(std::ranges::size(seq));
+        }
+        std::sort(sequence_lengths.begin(), sequence_lengths.end());
+        arguments.pattern_size = sequence_lengths[sequence_lengths.size()/2];
+    }
 
     hashmap_search(arguments);
 };
