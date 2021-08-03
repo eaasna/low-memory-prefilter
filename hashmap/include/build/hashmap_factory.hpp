@@ -7,7 +7,7 @@
 #include <seqan3/search/views/kmer_hash.hpp>
 #include <seqan3/utility/views/zip.hpp>
 
-#include <build/call_parallel_on_bins.hpp>
+#include <build/call_sequential_on_bins.hpp>
 
 namespace hashmap
 {
@@ -50,6 +50,7 @@ private:
 	
 	auto worker = [&] (auto && zipped_view, auto &&)
 	{
+	    // TODO: kustuta kommentaar
 	    seqan3::debug_stream << "Processing bin: " << '\n';
 	    for (auto && [file_names, bin_number] : zipped_view)
 	    {
@@ -66,8 +67,7 @@ private:
 	    }
 	};
 
-	// TODO: name is misleading, actually done on one thread
-	call_parallel_on_bins(worker, *arguments);
+	call_sequential_on_bins(worker, *arguments);
 
 	return hm;
     }
