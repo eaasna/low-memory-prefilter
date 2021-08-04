@@ -1,7 +1,6 @@
 #pragma once
 
 #include <seqan3/search/views/kmer_hash.hpp>
-#include <seqan3/core/debug_stream.hpp>
 
 #include <iomanip> // std::set_precision
 #include <set>
@@ -56,7 +55,6 @@ void run_program(search_arguments & arguments)
 
             read_hashes = seq | hash_view | seqan3::views::to<std::vector<uint64_t>>;
             std::vector<uint16_t> result(arguments.bins, 0);
-	    seqan3::debug_stream << "vektori suurus: " << std::to_string(arguments.bins) << '\n'; 
 	    for (auto hash : read_hashes)
 	    {
 		auto itr = hashmap.find(hash);
@@ -68,8 +66,7 @@ void run_program(search_arguments & arguments)
 		    {
 			// how many of the kmers in the read appear in each of the bins
 			result.at(bin) += 1;
-	                seqan3::debug_stream << "{" << std::to_string(result.at(bin)) << "}" << '\n';
-			// ++result[bin]; hirmus segmentation fault
+			// ++result[bin]; results in segmentation fault
 		    }
 		}
 	    }
@@ -95,8 +92,6 @@ void run_program(search_arguments & arguments)
     // each chunk is 10MB
     for (auto && chunked_records : fin | seqan3::views::chunk((1ULL<<20)*10))
     {
-	// TODO: deleteee
-	//seqan3::debug_stream << "chunk size: " << std::to_string((1ULL<<20)*10) << '\n';
 	records.clear();
         auto start = std::chrono::high_resolution_clock::now();
         std::ranges::move(chunked_records, std::cpp20::back_inserter(records));
@@ -107,15 +102,6 @@ void run_program(search_arguments & arguments)
 	// the hashmap will be loaded asynchronously
         cereal_handle.wait();
 	
-	// TODO: kustuta kommentaar
-        /*
-	seqan3::debug_stream << "All key values in map: \n";
-        for (auto const &pair: hashmap) {
-            seqan3::debug_stream << std::to_string(pair.first) << '\n';
-            seqan3::debug_stream << std::to_string(pair.second.size()) << '\n';
-        }
-	*/
-
         do_parallel(worker, records.size(), arguments.threads, compute_time);
     }
 

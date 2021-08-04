@@ -42,16 +42,15 @@ private:
 	assert(arguments != nullptr);
 	
 	std::unordered_map<uint32_t, std::set<uint16_t>> hm;
-
+	
 	auto hash_view = [&] ()
 	{
 	    return seqan3::views::kmer_hash(seqan3::shape{seqan3::ungapped{arguments->kmer_size}});
 	};
 	
+	seqan3::debug_stream << "Processing_bin: " << '\n';
 	auto worker = [&] (auto && zipped_view, auto &&)
 	{
-	    // TODO: kustuta kommentaar
-	    seqan3::debug_stream << "Processing bin: " << '\n';
 	    for (auto && [file_names, bin_number] : zipped_view)
 	    {
 		seqan3::debug_stream << std::to_string(bin_number) << '\n';

@@ -2,7 +2,6 @@
   
 #include <seqan3/core/algorithm/detail/execution_handler_sequential.hpp>
 #include <seqan3/utility/views/chunk.hpp>
-#include <seqan3/core/debug_stream.hpp>
 
 #include <shared.hpp>
 
@@ -12,10 +11,6 @@ namespace hashmap
 template <typename algorithm_t>
 void call_sequential_on_bins(algorithm_t && worker, build_arguments const & arguments)
 {
-
-    // TODO: kustuta kommentaar
-    seqan3::debug_stream << "Bins: " << std::to_string(arguments.bins) << '\n';
-   
     size_t const chunk_size = std::clamp<size_t>(arguments.bins, 8u, 64u);
 
     // It is easy to parallelize the construction of an IBF. That is not the case for constructing a hash table;
@@ -23,7 +18,7 @@ void call_sequential_on_bins(algorithm_t && worker, build_arguments const & argu
     // parallelization for the build. 
     auto chunked_view = seqan3::views::zip(arguments.bin_path, std::views::iota(0u)) |
                         seqan3::views::chunk(chunk_size);
-
+    
     seqan3::detail::execution_handler_sequential executioner{};
     executioner.bulk_execute(std::move(worker), std::move(chunked_view), [](){});
 }
