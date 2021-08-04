@@ -4,6 +4,6 @@
 namespace hashmap
 {
 
-void hashmap_search(search_arguments const & arguments);
+void hashmap_search(search_arguments & arguments);
 
 } // namespace hashmap

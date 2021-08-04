@@ -14,7 +14,7 @@
 namespace hashmap
 {
 
-void run_program(search_arguments const & arguments)
+void run_program(search_arguments & arguments)
 {
     auto hashmap = std::unordered_map<uint32_t, std::set<uint16_t>>{};
 
