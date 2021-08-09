@@ -6,6 +6,20 @@ This is a tool for pre-filtering reads before read mapping.
 It uses an hash table as an alternative to the usual IBF based methods.
 This tools emphazises low memory usage not speed or precision.
 
+Building the hashmap is done single-threaded. Querying the reads in the hashmap can be done multi-threaded.
+
+
+## Building for end-users:
+
+Instructions:
+1. clone this repository: `git clone --recurse-submodules https://github.com/eaasna/low-memory-prefilter.git`
+3. create a build directory and visit it: `mkdir build && cd build`
+4. run cmake: `cmake ../hashmap`
+5. build the application: `make`
+7. execute the app which is located at build/bin/ and display help page: `./hashmap -h`
+
+## Building for development:
+
 Instructions:
 1. clone this repository: `git clone --recurse-submodules https://github.com/eaasna/low-memory-prefilter.git`
 3. create a build directory and visit it: `mkdir build && cd build`
@@ -14,5 +28,3 @@ Instructions:
 6. optional: build and run the tests: `make test`
 7. optional: build the api documentation: `make doc`
 8. execute the app which is located at build/bin/: `./hashmap`
-
-Building the hashmap is done single-threaded. Querying the reads in the hashmap can be done multi-threaded.
