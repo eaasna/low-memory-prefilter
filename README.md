@@ -3,10 +3,11 @@
 [![Build Status](https://github.com/seqan/app-template/workflows/App%20CI/badge.svg)](https://github.com/seqan/app-template/actions?query=branch%3Amaster+workflow%3A%22App+CI%22)
 
 This is a tool for pre-filtering reads before read mapping. 
-It uses an hash table as an alternative to the usual IBF based methods.
+It uses a hash table as an alternative to IBF based methods.
 This tools emphazises low memory usage not speed or precision.
 
-Building the hashmap is done single-threaded. Querying the reads in the hashmap can be done multi-threaded.
+## Algorithm
+The hashmap build command creates a hash table where the keys are the complete set of k-mers. The value corresponding to a key is a list of all the bins that contain this k-mer. Building the hashmap is done single-threaded. The hashmap search command queries the hashmap and decides which bin each read should be mapped to based on the k-mer counting lemma. Querying the reads in the hashmap can be done multi-threaded.
 
 
 ## Building for end-users:
