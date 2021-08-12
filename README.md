@@ -14,15 +14,17 @@ The hashmap build command creates a hash table where the keys are the complete s
 
 Instructions:
 1. clone this repository: `git clone --recurse-submodules https://github.com/eaasna/low-memory-prefilter.git`
+2. change to the repository directory `cd low-memory-prefilter`
 3. create a build directory and visit it: `mkdir build && cd build`
 4. run cmake: `cmake ../hashmap`
 5. build the application: `make`
-7. execute the app which is located at build/bin/ and display help page: `./hashmap -h`
+6. execute the app which is located at build/bin/ and display help page: `./hashmap -h`
 
 ## Building for development:
 
 Instructions:
 1. clone this repository: `git clone --recurse-submodules https://github.com/eaasna/low-memory-prefilter.git`
+2. change to the repository directory `cd low-memory-prefilter`
 3. create a build directory and visit it: `mkdir build && cd build`
 4. run cmake: `cmake ../hashmap`
 5. build the application: `make`
